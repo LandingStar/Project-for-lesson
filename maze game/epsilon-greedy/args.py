@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Callable
-episode_lenth=100   #the lenth of 
+episode_lenth=250   #the lenth of 
+gamma=0.9
 convergence_critirion=0.01
 reward_common_road=0
 reward_forbidden_area=-1
@@ -9,6 +10,6 @@ def epsilon_greedy(epsilon:float)->Callable[[np.ndarray,],np.ndarray]: #give a f
     def the_policy(action_values:np.ndarray):
         cnt=len(action_values)
         p=np.array([epsilon/cnt]*cnt)
-        p[np.argmax(p)]+=1-epsilon
+        p[np.argmax(action_values)]+=1-epsilon
         return p
     return the_policy
