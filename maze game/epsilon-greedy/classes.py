@@ -28,8 +28,10 @@ class action:
 				return self.next_state[i]
 		return self.next_state[0]
 	def update(self,ret,a:Callable[[int,],float]=lambda x:1/x): # 'a' is the conerge coiffiecient in RM
+		
 		self.action_value=self.action_value-a(self.visit_cnt)*(self.action_value-ret)
 		self.visit_cnt+=1
+		
 
 
 
@@ -37,17 +39,18 @@ class action:
 
 class policy:
 	def __init__(self,principle:Callable[[np.ndarray,],np.ndarray]):
-		policy.principle=principle
+		self.principle=principle
 	def __call__(self,state:block)->np.ndarray: #call the instance then get probability of chocing actions
-		return self.principle(state.action_values)
+		values=list(map(lambda x:x.action_value,state.actions))
+		return self.principle(values)
 	def choice(self,state:block)->action:       #return the action the policy choose
 		probability=self.__call__(state)
 		total=probability.sum()
 		x=total*random.random()
-		for i in range(probability):
+		for i in range(len(probability)):
 			x-=probability[i]
 			if x<=0:
-				return self.next_state[i]
+				return state.actions[i]
 		return self.next_state[0]
 
 class episode:
