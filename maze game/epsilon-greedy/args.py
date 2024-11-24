@@ -9,6 +9,6 @@ def epsilon_greedy(epsilon:float)->Callable[[np.ndarray,],np.ndarray]: #give a f
     def the_policy(action_values:np.ndarray):
         cnt=len(action_values)
         p=np.array([epsilon/cnt]*cnt)
-        p[np.argmax(p)]=1--epsilon+(epsilon/cnt)
+        p[np.argmax(p)]+=1-epsilon
         return p
     return the_policy
