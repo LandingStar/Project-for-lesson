@@ -24,13 +24,13 @@ def import_mazz(path:str)->list:
                 cnt+=1
         return ret
     for i in range(n):
-        lin=file.readline()[:-1].split(" ")
+        lin=file.readline()[:-1].split("\t")
         value+=tuple(map(lambda x:np.float64(x),lin))
     for i in range(n*m):
         blocks[i].actions=give_actions(i)
     return blocks
 blocks=import_mazz("C:\\Users\\16329\\Source\\Repos\\LandingStar\\CST-Project\\maze game\\epsilon-greedy\\mazz.txt")
-for cnt_round in range(1000):
+for cnt_round in range(1500):
     epsilon_policy=policy(args.epsilon_greedy(100/(150+cnt_round**2)))
     init_state=blocks[random.randint(0,len(blocks)-1)]
     eps=episode(init_state,epsilon_policy,args.episode_lenth)
@@ -49,5 +49,5 @@ from sys import stdout
 for i in range(len(blocks)):
     if not i%max_column:
         stdout.write("\n")
-    stdout.write(str(state_value[i])+"\t")
+    stdout.write(f"{state_value[i]:5.4f}\t")
 stdout.write("\n")

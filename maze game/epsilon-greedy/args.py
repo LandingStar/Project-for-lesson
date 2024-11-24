@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Callable
 episode_lenth=250   #the lenth of 
-gamma=0.9
+gamma=0.92
 convergence_critirion=0.01
 reward_common_road=0
 reward_forbidden_area=-1
