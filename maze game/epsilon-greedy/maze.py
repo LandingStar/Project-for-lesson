@@ -1,5 +1,5 @@
 import random
-
+import sys
 
 def two_dimensional_maze(width, height):
     maze = [[-1] * width for i in range(height)]
@@ -22,8 +22,10 @@ def two_dimensional_maze(width, height):
     dfs(new_x_, new_y_)
     return maze, (target_x, target_y)
 
-
-maze_, target = two_dimensional_maze(int(input('width:')), int(input('height:')))
+r,h=int(input('width:')), int(input('height:'))
+maze_, target = two_dimensional_maze(r,h)
+sys.stdout=open("C:\\Users\\16329\\Source\\Repos\\LandingStar\\CST-Project\\maze game\\epsilon-greedy\\mazz.txt","w")
+print(str(h)+","+str(r))
 for row in maze_:
     print('\t'.join(map(str, row)))
-print(target)
+#print(target)
