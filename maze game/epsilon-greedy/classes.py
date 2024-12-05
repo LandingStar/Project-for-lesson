@@ -8,6 +8,7 @@ class block:
 	def __init__(self,actions:list):
 		self.position=0
 		self.state_value=0
+		self.state_reward=0
 		self.actions=actions
 		self.action_values=np.array([0]*len(actions))
 class set():
@@ -61,8 +62,8 @@ class action:
 				return self.next_state[i]
 		return self.next_state[0]
 	def update(self,ret,a:Callable[[int,],float]=lambda x:1/x): # 'a' is the conerge coiffiecient in RM
-		self.action_value=self.action_value-a(self.visit_cnt)*(self.action_value-ret)
 		self.visit_cnt+=1
+		self.action_value=self.action_value-a(self.visit_cnt)*(self.action_value-ret)
 		
 
 
@@ -95,6 +96,8 @@ class episode:
 			#a=self.act(policy)
 			self.track.append((self.now_state,a))
 			self.now_state=next(space[self.now_state].actions[a])
+			if space[self.now_state].state_reward>0:
+				return
 	def __iter__(self)->list:
 		return self.track
 	def act(self,policy:policy)->action:				# return the action the policy choose  ,same as choice in class policy
