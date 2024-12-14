@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from numba import jit
+#from numba import jit
 from typing import Callable
 global space
 space=[]
@@ -40,7 +40,7 @@ class set():
 		position=0
 		base=1
 		for i in range(len(self.maxlen)-1,-1,-1):
-			postion+=keys[i]*base
+			position+=keys[i]*base
 			base*=self.maxlen[i]
 		return position
 class action:
@@ -50,6 +50,7 @@ class action:
 		self.visit_cnt=0 #times that be visited
 		self.next_state=next_state
 		self.next_state_p=next_state_p
+		self.direction=[]
 		#self.next_state_p_expected=np.array([1/len(next_state)]*len(next_state)) #the expected position after some action used for questions that the next state is not settled after a certain action
 	def __iter__(self):
 		return self

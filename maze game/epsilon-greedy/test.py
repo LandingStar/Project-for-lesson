@@ -29,6 +29,7 @@ def import_mazz(path:str)->list:
                 ret[cnt].action_reward=value[(r+i)%n*m+(c+j)%m]
                 ret[cnt].action_value=value[(r+i)%n*m+(c+j)%m]
                 ret[cnt].visit_cnt=1
+                ret[cnt].direction = (i, j)
                 cnt+=1
         #for i,j in a:
         #    if value[(r+i)%n*m+(c+j)%m]<0:
@@ -47,7 +48,7 @@ def import_mazz(path:str)->list:
     classes.space=classes.set(blocks,n,m)
     classes.space.maxlen=[n,m]
     return classes.space
-classes.space=import_mazz("C:\\Users\\16329\\Source\\Repos\\LandingStar\\CST-Project\\maze game\\epsilon-greedy\\mazz.txt")
+classes.space=import_mazz("mazz.txt")
 
 init_state=random.randint(0,len(classes.space)-1)
 sign=1
@@ -93,7 +94,7 @@ while 0:
 
 
 state_value=tuple(map(lambda x:max(tuple(map(lambda y:y.action_value,x.actions))),classes.space.blocks))
-fig1 = plt.figure(num=1, figsize=(max_column,max_row))  
+fig1 = plt.figure(num=1, figsize=(max_column,max_row))
 axes1 = fig1.add_subplot(1,1,1)
 for i in range(len(classes.space)):
     y=i//max_column
@@ -101,17 +102,17 @@ for i in range(len(classes.space)):
     if not i%max_column:
         sys.stdout.write("\n")
     sys.stdout.write(f"{state_value[i]:5.3f}\t")
-    
+
     square = plt.Rectangle(xy=(1/max_column*x, 1/max_row*y), width=1/max_column, height=1/max_row, alpha=0.8, angle=0.0,color=(max(0,-math.tanh(0.2*(state_value[i]+classes.space[i].state_reward))),0,max(0,math.tanh(0.2*(state_value[i]+classes.space[i].state_reward))),0))
-    
-    axes1.add_patch(square) 
-    
+
+    axes1.add_patch(square)
+
 
 
 
 plt.savefig("out.png")
 plt.close()
-fig1 = plt.figure(num=1, figsize=(max_column,max_row)) 
+fig1 = plt.figure(num=1, figsize=(max_column,max_row))
 axes1 = fig1.add_subplot(1,1,1)
 for i in range(len(classes.space)):
     y=i//max_column
@@ -119,11 +120,11 @@ for i in range(len(classes.space)):
     #if not i%max_column:
     #    stdout.write("\n")
     #stdout.write(f"{state_value[i]:5.3f}\t")
-    
+
     square = plt.Rectangle(xy=(1/max_column*x, 1/max_row*y), width=1/max_column, height=1/max_row, alpha=0.8, angle=0.0,color=(max(0,-math.tanh(classes.space[i].state_reward)),0,max(0,(math.tanh(3*classes.space[i].state_reward))**2)))
-    
-    axes1.add_patch(square)  
-    
+
+    axes1.add_patch(square)
+
 
 plt.savefig("maze.png")
 plt.close()
@@ -140,7 +141,7 @@ for row in range(6):
     for s,a in eps.track:
         if not flg:
             break
-        fig1 = plt.figure(num=1, figsize=(max_column,max_row)) 
+        fig1 = plt.figure(num=1, figsize=(max_column,max_row))
         plt.title(f"Action value:{classes.space[s].actions[a].action_value}")
         axes1 = fig1.add_subplot(1,1,1)
         if classes.space[s].state_reward>0:
@@ -161,11 +162,11 @@ for row in range(6):
             if i==s or i==next(classes.space[s].actions[a]): #in list(map(lambda t:next(t),classes.space[s].actions)):
                 agent=1
             square = plt.Rectangle(xy=(1/max_column*x, 1/max_row*y), width=1/max_column, height=1/max_row, alpha=0.8, angle=0.0,color=(max(0,-math.tanh(classes.space[i].state_reward)),agent,max(0,math.tanh(3*classes.space[i].state_reward))))
-    
-            axes1.add_patch(square)  
-    
 
-    
+            axes1.add_patch(square)
+
+
+
         plt.savefig(f"track{row}\\"+str(cnt))
         cnt+=1
         plt.close()
