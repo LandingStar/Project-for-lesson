@@ -7,6 +7,7 @@ convergence_critirion=0.01
 reward_common_road=0
 reward_forbidden_area=-1
 reward_target=10
+run_round=10000
 def random_choice(lenth):
     def the_policy(action_values):
         return np.array([1/lenth]*lenth)
