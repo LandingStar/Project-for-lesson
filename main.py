@@ -1,38 +1,47 @@
-import torch
-import torch.optim as optim
-from torch.utils.tensorboard import SummaryWriter
-from Maze_Env import MazeEnv
-from Replay_Buffer import ReplayBuffer
-from Dqn import DQN
-from train import train_dqn
 
-if __name__ == "__main__":
-    # è®¾ç½®è¿·å®«çŽ¯å¢ƒ
-    env = MazeEnv(size=(100, 100))
+import numpy as np
+import random
 
-    # è®¾ç½®ç½‘ç»œå’Œä¼˜åŒ–å™¨
-    state_dim = 2  # æœºå™¨äººä½ç½®ï¼ˆx, yï¼‰
-    action_dim = 4  # å››ä¸ªåŠ¨ä½œï¼ˆä¸Šã€ä¸‹ã€å·¦ã€å³ï¼‰
-    main_network = DQN(state_dim, action_dim)
-    target_network = DQN(state_dim, action_dim)
-    target_network.load_state_dict(main_network.state_dict())  # ç›®æ ‡ç½‘ç»œåˆå§‹æ—¶å’Œä¸»ç½‘ç»œä¸€æ ·
-    optimizer = optim.Adam(main_network.parameters(), lr=0.001)
 
-    # è®¾ç½®è®­ç»ƒå‚æ•°
-    replay_buffer = ReplayBuffer(buffer_size=10000)
-    gamma = 0.99  # æŠ˜æ‰£å› å­
-    epsilon = 1.0  # åˆå§‹Îµå€¼
-    epsilon_min = 0.1
-    epsilon_decay = 0.995
-    batch_size = 32
-    max_episodes = 1000
-    target_update_freq = 1000  # æ¯1000å›žåˆæ›´æ–°ä¸€æ¬¡ç›®æ ‡ç½‘ç»œ
+class DeepQLearning:
+    def __init__(self, learning_rate, discount_factor, replay_buffer_size, batch_size, target_update_frequency):
+        self.learning_rate = learning_rate
+        self.discount_factor = discount_factor
+        self.replay_buffer = []
+        self.replay_buffer_size = replay_buffer_size
+        self.batch_size = batch_size
+        self.target_update_frequency = target_update_frequency
+        self.iteration_count = 0
+        # ÕâÀï¼ÙÉèmain_networkºÍtarget_networkÊÇÒÑ¾­¶¨ÒåºÃµÄÉñ¾­ÍøÂçÄ£ÐÍ
+        self.main_network = None
+        self.target_network = None
 
-    # è®¾ç½® TensorBoard è®°å½•
-    writer = SummaryWriter(log_dir='./runs/maze_dqn')
+    def store_experience(self, state, action, reward, next_state):
+        if len(self.replay_buffer) >= self.replay_buffer_size:
+            self.replay_buffer.pop(0)
+        self.replay_buffer.append((state, action, reward, next_state))
 
-    # è®­ç»ƒ DQN
-    train_dqn(env, main_network, target_network, optimizer, replay_buffer, gamma, epsilon, epsilon_min, epsilon_decay, batch_size, max_episodes, target_update_freq, writer)
-    
-    # å…³é—­ TensorBoard writer
-    writer.close()
+    def train(self):
+        if len(self.replay_buffer) < self.batch_size:
+            return
+
+        # ´Ó»Ø·Å»º³åÇøÖÐ¾ùÔÈ²ÉÑùÒ»¸öÐ¡ÅúÁ¿
+        mini_batch = random.sample(self.replay_buffer, self.batch_size)
+
+        states, actions, rewards, next_states = zip(*mini_batch)
+        states = np.array(states)
+        actions = np.array(actions)
+        rewards = np.array(rewards)
+        next_states = np.array(next_states)
+
+        # ¼ÆËãÄ¿±êÖµ
+        target_values = rewards + self.discount_factor * np.max(
+            self.target_network.predict(next_states), axis=1)
+
+        # Ê¹ÓÃÐ¡ÅúÁ¿¸üÐÂÖ÷ÍøÂç
+        self.main_network.train(states, actions, target_values)
+
+        self.iteration_count += 1
+        if self.iteration_count % self.target_update_frequency == 0:
+            # Ã¿C´Îµü´ú¸üÐÂÄ¿±êÍøÂç
+            self.target_network.set_weights(self.main_network.get_weights())
