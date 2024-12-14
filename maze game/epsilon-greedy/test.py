@@ -6,6 +6,7 @@ import threading
 import random
 import matplotlib.pyplot as plt
 import math
+import multiprocessing
 max_column=0
 max_row=0
 sys.stdout=open("out.txt","w")
@@ -19,23 +20,23 @@ def import_mazz(path:str)->list:
     def give_actions(pos:int)->list:
         r,c=[pos//m,pos%m]
         a=[-1,0,1]
-        a=((0,0),(-1,0),(1,0),(0,-1),(0,1))
-        #ret=[classes.action(np.array([(r+i)%n*m+(c+j)%m,]),np.array([1,]))for i in a for j in a]
-        ret=[classes.action(np.array([(r+i)%n*m+(c+j)%m,]),np.array([1,]))for (i,j) in a]
+        #a=((0,0),(-1,0),(1,0),(0,-1),(0,1))
+        ret=[classes.action(np.array([(r+i)%n*m+(c+j)%m,]),np.array([1,]))for i in a for j in a]
+        #ret=[classes.action(np.array([(r+i)%n*m+(c+j)%m,]),np.array([1,]))for (i,j) in a]
         cnt=0
-        #for i in a:
-        #    for j in a:
-        #        ret[cnt].action_reward=value[(r+i)%n*m+(c+j)%m]
-        #        ret[cnt].action_value=value[(r+i)%n*m+(c+j)%m]
-        #        ret[cnt].visit_cnt=1
-        #        cnt+=1
-        for i,j in a:
-            if value[(r+i)%n*m+(c+j)%m]<0:
-                ret[cnt].next_state=[(r)%n*m+(c)%m,]
-            ret[cnt].action_reward=value[(r+i)%n*m+(c+j)%m]
-            ret[cnt].action_value=value[(r+i)%n*m+(c+j)%m]
-            ret[cnt].visit_cnt=1
-            cnt+=1
+        for i in a:
+            for j in a:
+                ret[cnt].action_reward=value[(r+i)%n*m+(c+j)%m]
+                ret[cnt].action_value=value[(r+i)%n*m+(c+j)%m]
+                ret[cnt].visit_cnt=1
+                cnt+=1
+        #for i,j in a:
+        #    if value[(r+i)%n*m+(c+j)%m]<0:
+        #        ret[cnt].next_state=[(r)%n*m+(c)%m,]
+        #    ret[cnt].action_reward=value[(r+i)%n*m+(c+j)%m]
+        #    ret[cnt].action_value=value[(r+i)%n*m+(c+j)%m]
+        #    ret[cnt].visit_cnt=1
+        #    cnt+=1
         return ret
     for i in range(n):
         lin=file.readline()[:-1].split("\t")
@@ -50,10 +51,11 @@ classes.space=import_mazz("C:\\Users\\16329\\Source\\Repos\\LandingStar\\CST-Pro
 
 init_state=random.randint(0,len(classes.space)-1)
 sign=1
-for cnt_round in range(35500):
+#process_pool=multiprocessing.Pool()
+for cnt_round in range(args.run_round):
     epsilon_policy=classes.policy(args.epsilon_greedy(1))
 
-    epsilon_policy=classes.policy(args.random_choice(5))
+    #epsilon_policy=classes.policy(args.random_choice(5))
 
     init_state=random.randint(0,len(classes.space)-1)
     eps=classes.episode(init_state,epsilon_policy,args.episode_lenth)
@@ -132,7 +134,7 @@ for row in range(6):
     print(row)
     epsilon_policy=classes.policy(args.epsilon_greedy(0))
     init_state=random.randint(0,len(classes.space)-1)
-    eps=classes.episode(init_state,epsilon_policy,30)
+    eps=classes.episode(init_state,epsilon_policy,-1)
     cnt=0
     flg=1
     for s,a in eps.track:

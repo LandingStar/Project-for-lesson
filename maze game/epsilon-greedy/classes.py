@@ -1,6 +1,6 @@
 import numpy as np
 import random
-
+from numba import jit
 from typing import Callable
 global space
 space=[]
@@ -91,6 +91,13 @@ class episode:
 		self.track=[]
 		self.now_state=state
 		self.policy=policy
+		if step<0:
+			while space[self.now_state].state_reward<=0:
+				a=policy.choice(space[self.now_state])
+				#a=self.act(policy)
+				self.track.append((self.now_state,a))
+				self.now_state=next(space[self.now_state].actions[a])
+			return
 		for i in range(step):
 			a=policy.choice(space[self.now_state])
 			#a=self.act(policy)
