@@ -44,7 +44,7 @@ def import_maze(path:str)->list:
     classes.space=classes.set(blocks,n,m)
     classes.space.maxlen=[n,m]
     return classes.space
-def plot_maze(space):
+def plot_maze(space,fig_name="actions taken.png"):
     #"""
     #绘制迷宫的可视化图形，根据要求展示不同元素及方向线段，并添加每个方向的action value显示
     #"""
@@ -94,7 +94,8 @@ def plot_maze(space):
 
     ax.set_aspect('equal')
     ax.axis('off')
-    plt.savefig('actions taken.png')
+    plt.savefig(fig_name)
+    plt.close()
     return
 
 
@@ -119,3 +120,20 @@ if __name__ == "__main__":
             classes.space[s].actions[a].update(classes.space[s].actions[a].action_reward + args.gamma * max(list(map(lambda x: x.action_value, classes.space[eps.track[ind + 1][0]].actions))))
     plot_maze()
     sys.stdout = sys.__stdout__
+def out_figure():
+    state_value=tuple(map(lambda x:max(tuple(map(lambda y:y.action_value,x.actions))),classes.space.blocks))
+    fig1 = plt.figure(num=1, figsize=(max_column,max_row))  
+    axes1 = fig1.add_subplot(1,1,1)
+    for i in range(len(classes.space)):
+        y=i//max_column
+        x=i%max_column
+        #if not i%max_column:
+        #    sys.stdout.write("\n")
+        #sys.stdout.write(f"{state_value[i]:5.3f}\t")
+    
+        square = plt.Rectangle(xy=(1/max_column*x, 1/max_row*y), width=1/max_column, height=1/max_row, alpha=0.8, angle=0.0,color=(max(0,-math.tanh(0.2*(state_value[i]+classes.space[i].state_reward))),0,max(0,math.tanh(0.2*(state_value[i]+classes.space[i].state_reward))),0))
+    
+        axes1.add_patch(square) 
+
+    plt.savefig("out.png")
+    plt.close()

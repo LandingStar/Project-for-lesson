@@ -24,7 +24,7 @@ def two_dimensional_maze(width, height):
 
 r,h=int(input('width:')), int(input('height:'))
 maze_, target = two_dimensional_maze(r,h)
-sys.stdout=open("C:\\Users\\16329\\Source\\Repos\\LandingStar\\CST-Project\\maze game\\epsilon-greedy\\mazz.txt","w")
+sys.stdout=open("C:\\Users\\16329\\Source\\Repos\\LandingStar\\CST-Project\\maze game\\epsilon-greedy\\maze.txt","w")
 print(str(h)+","+str(r))
 for row in maze_:
     print('\t'.join(map(str, row)))

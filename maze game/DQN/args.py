@@ -3,19 +3,21 @@ from typing import Callable
 import random
 import multiprocessing
 import torch
-episode_length=100   #the length of single episode
+episode_length=50   #the length of single episode
 gamma=0.95            #loss rate
-batch_length=300
-update_round=22
-AN_cache_min_length=500 #the minimum length of cache from sample processing to active network
+batch_length=100
+update_round=5
+AN_cache_min_length=200 #the minimum length of cache from sample processing to active network
 
-sample_threading_num=1
+sample_threading_num=3
 
-run_round=600
+run_round=300
 convergence_critirion=0.01
 reward_common_road=0
 reward_forbidden_area=-1
 reward_target=10
+
+lr_rate=0.02
 
 max_row=1
 max_column=1
