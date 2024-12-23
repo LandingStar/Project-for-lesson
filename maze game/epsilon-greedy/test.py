@@ -58,7 +58,7 @@ for cnt_round in range(args.run_round):
     #epsilon_policy=classes.policy(args.random_choice(5))
 
     init_state=random.randint(0,len(classes.space)-1)
-    eps=classes.episode(init_state,epsilon_policy,args.episode_lenth)
+    eps=classes.episode(init_state,epsilon_policy,args.episode_length)
     #sample_return=classes.space[eps.track[-1][0]].actions[eps.track[-1][1]].action_value
     for ind in range(len(eps.track)-2,0,-1):
         s,a=eps.track[ind]
